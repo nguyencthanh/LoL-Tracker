@@ -6,7 +6,7 @@
 *.userosscache
 *.suo
 *.sln.docstates
-lol-tracker/ApiKey.cs
+lol-tracker/Services/ApiKey.cs
 
 # Build results
 [Dd]ebug/

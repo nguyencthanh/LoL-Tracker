@@ -1,0 +1,69 @@
+@page "/Data"
+@inject HttpClient Http
+@inject ApiKey ApiKey
+@using System.Text.Json
+@using System.Text.Json.Nodes
+@using System.Text.Json.Serialization
+
+<h2>Riot Game Account Information</h2>
+@if (datas != null && datas.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Game Name</th>
+                <th>TagLine</th>
+                <th>Puuid</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in datas)
+            {
+                <tr>
+                    <td>@account.gameName</td>
+                    <td>@account.tagLine</td>
+                    <td>@account.puuid</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Can't Find Account Information</p>
+}
+
+@code {
+    private AccountData[]? datas;
+    private string apiKey;
+    private string gameName = "TheCampingLoL";
+    private string tagLine = "NA1";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Riot Games API requirements
+        apiKey = ApiKey.getApiKey();
+        string url =
+        $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={apiKey}";
+        HttpResponseMessage response = await Http.GetAsync(url);
+        Console.WriteLine(url);
+
+        // Checking if there is response
+        if (response.IsSuccessStatusCode)
+        {
+            string content = await response.Content.ReadAsStringAsync();
+            AccountData account = JsonSerializer.Deserialize<AccountData>(content);
+            datas = new AccountData[] { account };
+
+        }
+    }
+
+    public class AccountData
+    {
+        public string puuid { get; set; }
+        public string gameName { get; set; }
+        public string tagLine { get; set; }
+    }
+
+
+}

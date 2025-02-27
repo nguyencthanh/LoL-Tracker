@@ -1,49 +1,34 @@
-﻿using System;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
+using lol_tracker.Components;
 
+var builder = WebApplication.CreateBuilder(args);
 
-namespace LoLTracker
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+// Adding the Httpclient
+builder.Services.AddHttpClient();
+
+// Adding APIkey 
+builder.Services.AddSingleton<ApiKey>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    internal class Program
-    {
-        static async Task Main(string[] args)
-        {
-            // Getting API Key
-            string apiKey = ApiKey.GetApiKey();
-
-            HttpClient client = new HttpClient();
-
-            // Obtain User Information 
-            Console.WriteLine("What is your game name: ");
-            string gameName = Console.ReadLine();
-            Console.WriteLine("What is your tag name: ");
-            string tagLine = Console.ReadLine();
-            string url = "https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" + gameName + "/" + tagLine + "?api_key=" + apiKey;
-
-            try
-            {
-                // Performing the GET request
-                HttpResponseMessage respone = await client.GetAsync(url);
-
-                // If the request is successful
-                if (respone.IsSuccessStatusCode)
-                {
-                    string content = await respone.Content.ReadAsStringAsync();
-
-                    Account account = JsonSerializer.Deserialize<Account>(content);
-
-                    Console.WriteLine($"Puuid: {account.puuid}");
-                    Console.WriteLine($"Puuid: {account.gameName}");
-                    Console.WriteLine($"Puuid: {account.tagLine}");
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-            }
-        }
-    }
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+
+
+app.UseAntiforgery();
+
+app.MapStaticAssets();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+app.Run();
