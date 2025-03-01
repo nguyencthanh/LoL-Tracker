@@ -1,9 +1,17 @@
 ﻿@page "/"
+@inject IJSRuntime JS
 
-<PageTitle>Home</PageTitle>
+<h3>Enter Text</h3>
 
-<div></div>
+<input @bind="userInput" placeholder="Type something" />
+<button @onclick="LogInputToConsole">Log Input</button>
 
 @code {
+    private string userInput;
 
+    private async Task LogInputToConsole()
+    {
+        // Log the input text to the JavaScript console
+        await JS.InvokeVoidAsync("console.log", userInput);
+    }
 }
