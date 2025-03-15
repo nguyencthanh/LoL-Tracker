@@ -1,17 +1,26 @@
 ﻿@page "/"
-@inject IJSRuntime JS
+@rendermode InteractiveServer
+<PageTitle>League of Legends Account Tracker</PageTitle>
+<div>
+    <form action="/Data">
+        <label>Username: </label>
+        <input type="text" @bind="gameName" @bind:event="oninput" />
+        <p role="status">entered: @gameName</p>
+        <label>Tagline: </label>
+        <input type="text" @bind="tagLine" @bind:event="oninput" />
+        <p role="status">entered: @tagLine</p>
+        <input type="submit" value="Submit" />
+    </form>
+</div>
 
-<h3>Enter Text</h3>
-
-<input @bind="userInput" placeholder="Type something" />
-<button @onclick="LogInputToConsole">Log Input</button>
-
+<button class="btn btn-primary" @onclick="SystemCheck">Click me</button>
 @code {
-    private string userInput;
+    private string gameName = "";
+    private string tagLine = "";
 
-    private async Task LogInputToConsole()
+    private void SystemCheck()
     {
-        // Log the input text to the JavaScript console
-        await JS.InvokeVoidAsync("console.log", userInput);
+        Console.WriteLine(gameName);
+        Console.WriteLine(tagLine);
     }
 }
