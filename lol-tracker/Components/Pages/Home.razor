@@ -1,26 +1,23 @@
 ﻿@page "/"
 @rendermode InteractiveServer
+@inject DataService DataService
+
 <PageTitle>League of Legends Account Tracker</PageTitle>
 <div>
-    <form action="/Data">
+    <form action="/data">
         <label>Username: </label>
-        <input type="text" @bind="gameName" @bind:event="oninput" />
-        <p role="status">entered: @gameName</p>
+        <input type="text" @bind="DataService.gameNameInput" @bind:event="oninput" />
+        <p role="status">entered: @DataService.gameNameInput</p>
         <label>Tagline: </label>
-        <input type="text" @bind="tagLine" @bind:event="oninput" />
-        <p role="status">entered: @tagLine</p>
-        <input type="submit" value="Submit" />
+        <input type="text" @bind="DataService.tagLineInput" @bind:event="oninput" />
+        <p role="status">entered: @DataService.tagLineInput</p>
+        <input type="submit" value="Submit" @onclick="submitUserData" />
     </form>
 </div>
 
-<button class="btn btn-primary" @onclick="SystemCheck">Click me</button>
 @code {
-    private string gameName = "";
-    private string tagLine = "";
-
-    private void SystemCheck()
+    private void submitUserData()
     {
-        Console.WriteLine(gameName);
-        Console.WriteLine(tagLine);
+        Console.WriteLine($"Username: {DataService.gameNameInput}, Tagline: {DataService.tagLineInput}");
     }
 }

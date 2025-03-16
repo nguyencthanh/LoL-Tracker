@@ -9,8 +9,10 @@ builder.Services.AddRazorComponents()
 // Adding the Httpclient
 builder.Services.AddHttpClient();
 
-// Adding APIkey 
+// Adding APIkey file 
 builder.Services.AddSingleton<ApiKey>();
+// Adding DataService file
+builder.Services.AddSingleton<DataService>();
 
 var app = builder.Build();
 

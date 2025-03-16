@@ -1,6 +1,7 @@
-@page "/Data"
+@page "/data"
 @inject HttpClient Http
 @inject ApiKey ApiKey
+@inject DataService DataService
 @using System.Text.Json
 @using System.Text.Json.Nodes
 @using System.Text.Json.Serialization
@@ -31,17 +32,24 @@
 else
 {
     <p>Can't Find Account Information</p>
+    <p>Username: @DataService.gameNameInput</p>
+    <p>Tagline: @DataService.tagLineInput</p>
 }
 
 @code {
     private AccountData[]? datas;
+
     private string apiKey;
-    private string gameName = "TheCampingLoL";
-    private string tagLine = "NA1";
+    private string gameName;
+    private string tagLine;
 
     protected override async Task OnInitializedAsync()
     {
         // Riot Games API requirements
+        gameName = DataService.gameNameInput;
+        Console.WriteLine($"Username: {gameName}");
+        tagLine = DataService.tagLineInput;
+        Console.WriteLine($"Tagline: {tagLine}");
         apiKey = ApiKey.getApiKey();
         string url =
         $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={apiKey}";
@@ -54,7 +62,7 @@ else
             string content = await response.Content.ReadAsStringAsync();
             AccountData account = JsonSerializer.Deserialize<AccountData>(content);
             datas = new AccountData[] { account };
-
+            // DataService.puuidData = datas[2];
         }
     }
 
